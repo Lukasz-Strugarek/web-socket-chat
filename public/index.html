@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Chat</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div id="login-container">
+      <h1>Czat WebSocket</h1>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Twój nick:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="room">Pokój (opcjonalnie):</label>
+          <input type="text" id="room" name="room" placeholder="main">
+        </div>
+        <button type="submit" class="btn">Dołącz do czatu</button>
+      </form>
+    </div>
+
+    <div id="chat-container" class="hidden">
+      <div class="chat-sidebar">
+        <div class="room-header">
+          <h2 id="current-room">Pokój: main</h2>
+        </div>
+        <div class="room-list">
+          <h3>Dostępne pokoje</h3>
+          <ul id="rooms"></ul>
+          <div class="create-room">
+            <input type="text" id="new-room" placeholder="Nazwa pokoju">
+            <button id="create-room-btn" class="btn">Utwórz</button>
+          </div>
+        </div>
+        <div class="users-container">
+          <h3>Użytkownicy online</h3>
+          <ul id="users"></ul>
+        </div>
+      </div>
+      
+      <div class="chat-main">
+        <div class="chat-messages" id="messages"></div>
+        
+        <div id="typing-indicator" class="typing-indicator hidden"></div>
+        
+        <div class="chat-form-container">
+          <form id="chat-form">
+            <div class="message-input-container">
+              <input type="text" id="message" placeholder="Wpisz wiadomość...">
+              <div class="upload-wrapper">
+                <label for="image-upload" class="upload-btn">
+                  <span class="upload-icon">📷</span>
+                </label>
+                <input type="file" id="image-upload" accept="image/*" hidden>
+              </div>
+            </div>
+            <button class="btn">Wyślij</button>
+          </form>
+          <div id="image-preview" class="image-preview hidden">
+            <div class="preview-content">
+              <img id="preview-img" src="#" alt="Podgląd zdjęcia">
+              <button id="cancel-upload" class="btn cancel-btn">Anuluj</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/client.js"></script>
+</body>
+</html>
