@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WebSocket Chat</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="/socket.io/socket.io.js"></script>
@@ -28,6 +28,7 @@
       <div class="chat-sidebar">
         <div class="room-header">
           <h2 id="current-room">Pokój: main</h2>
+          <button id="leave-room-btn" class="btn leave-btn">Opuść pokój</button>
         </div>
         <div class="room-list">
           <h3>Dostępne pokoje</h3>
@@ -42,12 +43,10 @@
           <ul id="users"></ul>
         </div>
       </div>
-      
+
       <div class="chat-main">
         <div class="chat-messages" id="messages"></div>
-        
         <div id="typing-indicator" class="typing-indicator hidden"></div>
-        
         <div class="chat-form-container">
           <form id="chat-form">
             <div class="message-input-container">
@@ -71,7 +70,6 @@
       </div>
     </div>
   </div>
-
   <script src="js/client.js"></script>
 </body>
 </html>

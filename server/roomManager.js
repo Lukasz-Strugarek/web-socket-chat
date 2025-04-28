@@ -1,14 +1,16 @@
+// server/roomManager.js
+
 const userManager = require('./userManager');
 
-// Struktura pokojów
-const rooms = new Map();
-// Mapowanie użytkownik -> pokój
-const userRooms = new Map();
+// Mapa: nazwa pokoju → Set<socketId>
+const rooms      = new Map();
+// Mapa: socketId → Set<pokój>
+const userRooms  = new Map();
 
 // Inicjalizacja domyślnego pokoju
-function init() {
+(function init() {
   createRoom('main');
-}
+})();
 
 // Utworzenie nowego pokoju
 function createRoom(roomName) {
@@ -19,27 +21,32 @@ function createRoom(roomName) {
   return false;
 }
 
-// Dodawanie użytkownika do pokoju
+// Dodanie użytkownika do pokoju
 function addUserToRoom(socketId, roomName) {
   if (!rooms.has(roomName)) {
     createRoom(roomName);
   }
-  
-  // Dodaj użytkownika do pokoju
   rooms.get(roomName).add(socketId);
-  // Zapisz informację o pokoju użytkownika
-  userRooms.set(socketId, roomName);
+  if (!userRooms.has(socketId)) {
+    userRooms.set(socketId, new Set());
+  }
+  userRooms.get(socketId).add(roomName);
 }
 
 // Usunięcie użytkownika z pokoju
 function removeUserFromRoom(socketId, roomName) {
   if (rooms.has(roomName)) {
     rooms.get(roomName).delete(socketId);
-    userRooms.delete(socketId);
-    
-    // Jeśli pokój jest pusty i nie jest głównym pokojem, usuń go
+    // Jeśli pokój jest pusty i nie main, usuń go
     if (rooms.get(roomName).size === 0 && roomName !== 'main') {
       rooms.delete(roomName);
+    }
+  }
+  if (userRooms.has(socketId)) {
+    const set = userRooms.get(socketId);
+    set.delete(roomName);
+    if (set.size === 0) {
+      userRooms.delete(socketId);
     }
   }
 }
@@ -49,44 +56,34 @@ function roomExists(roomName) {
   return rooms.has(roomName);
 }
 
-// Pobranie pokoju użytkownika
-function getUserRoom(socketId) {
-  return userRooms.get(socketId);
+// Pobranie listy pokoi, do których należy użytkownik
+function getUserRooms(socketId) {
+  return Array.from(userRooms.get(socketId) || []);
 }
 
-// Pobranie wszystkich użytkowników w pokoju
+// Pobranie użytkowników w danym pokoju
 function getUsersInRoom(roomName) {
-  if (!rooms.has(roomName)) {
-    return [];
-  }
-  
-  const userIds = Array.from(rooms.get(roomName));
-  return userIds.map(id => userManager.getUser(id)).filter(user => user !== undefined);
+  if (!rooms.has(roomName)) return [];
+  return Array.from(rooms.get(roomName))
+    .map(id => userManager.getUser(id))
+    .filter(u => u);
 }
 
-// Pobranie listy dostępnych pokojów
+// Lista wszystkich pokoi i rozmiarów
 function getAvailableRooms() {
-  const availableRooms = [];
-  
-  for (const [roomName, users] of rooms.entries()) {
-    availableRooms.push({
-      name: roomName,
-      users: users.size
-    });
+  const available = [];
+  for (const [name, set] of rooms.entries()) {
+    available.push({ name, users: set.size });
   }
-  
-  return availableRooms;
+  return available;
 }
-
-// Inicjalizacja domyślnego pokoju
-init();
 
 module.exports = {
   createRoom,
   addUserToRoom,
   removeUserFromRoom,
   roomExists,
-  getUserRoom,
+  getUserRooms,
   getUsersInRoom,
   getAvailableRooms
 };

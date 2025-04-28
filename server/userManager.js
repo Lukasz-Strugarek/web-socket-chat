@@ -1,51 +1,35 @@
+// server/userManager.js
+
 const users = new Map();
 
 // Dodawanie użytkownika
 function addUser(socketId, username) {
-  const user = {
-    id: socketId,
-    username
-  };
-  
+  const user = { id: socketId, username };
   users.set(socketId, user);
   return user;
 }
 
-// Pobieranie użytkownika
+// Pobranie użytkownika
 function getUser(socketId) {
   return users.get(socketId);
 }
 
-// Usuwanie użytkownika
+// Usunięcie użytkownika
 function removeUser(socketId) {
-  if (users.has(socketId)) {
-    const user = users.get(socketId);
-    users.delete(socketId);
-    return user;
-  }
-  return null;
+  const user = users.get(socketId);
+  users.delete(socketId);
+  return user;
 }
 
-// Pobieranie wszystkich użytkowników
+// Pobranie wszystkich użytkowników
 function getAllUsers() {
   return Array.from(users.values());
 }
 
-// Pobieranie użytkowników w pokoju
-function getUsersInRoom(roomName) {
-  const roomUsers = [];
-  
-  // Ta funkcja będzie współpracować z roomManager
-  // Tutaj zbieramy tylko dane użytkowników, ale informacja o pokojach
-  // będzie zarządzana przez roomManager
-  
-  return roomUsers;
-}
-
-// Sprawdzanie czy nick jest zajęty
+// Sprawdzenie, czy nazwa jest zajęta
 function isUsernameTaken(username) {
-  for (const user of users.values()) {
-    if (user.username.toLowerCase() === username.toLowerCase()) {
+  for (const u of users.values()) {
+    if (u.username.toLowerCase() === username.toLowerCase()) {
       return true;
     }
   }
@@ -57,6 +41,5 @@ module.exports = {
   getUser,
   removeUser,
   getAllUsers,
-  getUsersInRoom,
   isUsernameTaken
 };

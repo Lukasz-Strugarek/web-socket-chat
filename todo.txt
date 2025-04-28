@@ -1,4 +1,4 @@
 - mozliwosc bycia w dwoch lub wiecej pokoi, żeby nie wywalało przy przejściu do innego
 - wychodzenie z pokoju przyciskiem
 - brak możliwości kliknięcia w zdjęcie
-- dodać "is typing"
+- dodać "is typing" (done)
