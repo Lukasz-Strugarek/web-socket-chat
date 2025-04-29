@@ -33,7 +33,6 @@ ul {
   display: none !important;
 }
 
-/* Formularz logowania */
 #login-container {
   max-width: 500px;
   margin: 100px auto 0;
@@ -61,7 +60,6 @@ ul {
   font-size: 16px;
 }
 
-/* Buttony */
 .btn {
   background-color: #4CAF50;
   color: white;
@@ -76,7 +74,6 @@ ul {
   background-color: #45a049;
 }
 
-/* Specjalne buttony */
 .cancel-btn {
   background-color: #f44336;
 }
@@ -91,7 +88,6 @@ ul {
   background-color: #d32f2f;
 }
 
-/* Container czatu */
 #chat-container {
   height: 100%;
   display: flex;
@@ -100,9 +96,8 @@ ul {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Sidebar */
 .chat-sidebar {
-  width: 300px;           /* ↑ zwiększona szerokość */
+  width: 300px;
   background-color: #333;
   color: #fff;
   padding: 20px;
@@ -121,7 +116,7 @@ ul {
 .room-list {
   margin-bottom: 20px;
   flex-grow: 1;
-  overflow-y: auto;       /* zapobiega reskalowaniu */
+  overflow-y: auto;
 }
 
 .room-list ul {
@@ -141,7 +136,6 @@ ul {
   background-color: #555;
 }
 
-/* Aktywny pokój – tło i tekst na zielono */
 .room-list li.active {
   background-color: #4CAF50;
   color: #fff;
@@ -171,7 +165,6 @@ ul {
   padding: 5px 0;
 }
 
-/* Główna część czatu */
 .chat-main {
   flex: 1;
   display: flex;
@@ -185,7 +178,6 @@ ul {
   overflow-y: auto;
 }
 
-/* Wiadomości */
 .message,
 .system-message {
   clear: both;
@@ -243,14 +235,12 @@ ul {
   border-radius: 4px;
 }
 
-/* Wskaźnik pisania */
 .typing-indicator {
   padding: 10px 20px;
   font-style: italic;
   color: #777;
 }
 
-/* Formularz czatu */
 .chat-form-container {
   padding: 15px;
   background-color: #f4f4f4;
@@ -289,7 +279,6 @@ ul {
   color: #4CAF50;
 }
 
-/* Podgląd zdjęcia */
 .image-preview {
   margin-top: 10px;
   padding: 10px;
@@ -308,7 +297,6 @@ ul {
   margin-right: 10px;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
   #chat-container {
     flex-direction: column;
