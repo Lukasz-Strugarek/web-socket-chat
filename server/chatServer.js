@@ -1,5 +1,3 @@
-// server/chatServer.js
-
 const socketIO    = require('socket.io');
 const userManager = require('./userManager');
 const roomManager = require('./roomManager');

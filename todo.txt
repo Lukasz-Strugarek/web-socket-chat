@@ -4,3 +4,11 @@
 - dodać "is typing" (done)
 - zmiana koloru dla aktualnego pokoju (done)
 - rozciągnięcie sidebara (done)
+
+
+
+Pomysł na projekt:
+- stream nowo rejestrowanych certyfikatów - WS(kazdy moze zastosować pod swoje potrzeby)
+- wyszukiwanie podobnych domen - podszywanie się
+- wyszukiwanie subdomen
+- wysyłanie powiadomień o wygasających certyfikatach - wymagają odnowienia

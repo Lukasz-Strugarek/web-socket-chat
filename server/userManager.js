@@ -1,5 +1,3 @@
-// server/userManager.js
-
 const users = new Map();
 
 function addUser(socketId, username) {

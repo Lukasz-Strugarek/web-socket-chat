@@ -1,5 +1,3 @@
-// public/js/client.js
-
 const socket = io();
 
 const loginContainer     = document.getElementById('login-container');

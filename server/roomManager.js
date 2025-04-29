@@ -1,5 +1,3 @@
-// server/roomManager.js
-
 const userManager = require('./userManager');
 
 const rooms      = new Map();
