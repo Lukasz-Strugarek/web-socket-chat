@@ -2,7 +2,7 @@
 
 const socket = io();
 
-// DOM
+// DOM elements
 const loginContainer     = document.getElementById('login-container');
 const chatContainer      = document.getElementById('chat-container');
 const loginForm          = document.getElementById('login-form');
@@ -24,6 +24,7 @@ const leaveRoomBtn       = document.getElementById('leave-room-btn');
 let currentUser       = null;
 let currentRoom       = null;
 let joinedRooms       = [];
+let roomsCache        = [];
 let typingTimeout     = null;
 let selectedImageFile = null;
 
@@ -43,53 +44,68 @@ function listenForEvents() {
 
     currentRoomElement.textContent = `Pokój: ${room}`;
     updateUsersList(users);
-    updateRoomsList(availableRooms);
+    roomsCache = availableRooms;
+    updateRoomsList(roomsCache);
+    addSystemMessage(`Dołączyłeś do pokoju ${room}`, room);
     renderRoom(room);
+    highlightActiveRoom();
   });
 
   socket.on('new_message', message => {
     addChatMessage(message);
     clearTypingIndicator(message.user.username);
-    renderRoom(currentRoom);
     scrollToBottom();
   });
 
   socket.on('user_joined', ({ user, message, users }) => {
-    addSystemMessage(message);
+    addSystemMessage(message, currentRoom);
     updateUsersList(users);
-    renderRoom(currentRoom);
   });
 
   socket.on('user_left', ({ user, message, users }) => {
-    addSystemMessage(message);
+    addSystemMessage(message, currentRoom);
     updateUsersList(users);
-    renderRoom(currentRoom);
   });
 
-  socket.on('user_typing', ({ user }) => addTypingIndicator(user));
-  socket.on('user_stop_typing', ({ user }) => clearTypingIndicator(user));
+  socket.on('user_typing', ({ user })    => addTypingIndicator(user));
+  socket.on('user_stop_typing', ({ user })=> clearTypingIndicator(user));
 
   socket.on('room_joined', ({ room, users }) => {
-    if (!joinedRooms.includes(room)) joinedRooms.push(room);
+    const isNew = !joinedRooms.includes(room);
+    if (isNew) joinedRooms.push(room);
+
     currentRoom = room;
     currentRoomElement.textContent = `Pokój: ${room}`;
     updateUsersList(users);
+
+    if (isNew) {
+      addSystemMessage(`Dołączyłeś do pokoju ${room}`, room);
+    }
     renderRoom(room);
+    highlightActiveRoom();
   });
 
   socket.on('room_left', ({ room }) => {
     joinedRooms = joinedRooms.filter(r => r !== room);
+    addSystemMessage(`Opuściłeś pokój ${room}`, room);
+
     if (room === currentRoom) {
       currentRoom = joinedRooms[0] || null;
       currentRoomElement.textContent = currentRoom ? `Pokój: ${currentRoom}` : 'Pokój: -';
-      renderRoom(currentRoom);
-      updateUsersList([]);
     }
     renderRoom(currentRoom);
+    highlightActiveRoom();
+    updateUsersList([]);
   });
 
   socket.on('room_created', ({ room }) => socket.emit('join_room', room));
-  socket.on('rooms_update', rooms => updateRoomsList(rooms));
+
+  socket.on('rooms_update', rooms => {
+    roomsCache = rooms;
+    updateRoomsList(roomsCache);
+    highlightActiveRoom();
+  });
+
   socket.on('error', ({ message }) => alert(message));
 }
 
@@ -157,7 +173,7 @@ function setupUIHandlers() {
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Wybierz obraz Mniej niż 5MB');
+      alert('Wybierz obraz mniejszy niż 5MB');
       resetImageUpload();
     }
   });
@@ -168,36 +184,40 @@ function setupUIHandlers() {
   });
 }
 
+function renderRoom(room) {
+  Array.from(messagesContainer.children).forEach(el => {
+    el.style.display = (el.dataset.room === room) ? '' : 'none';
+  });
+}
+
+function highlightActiveRoom() {
+  document.querySelectorAll('.room-item').forEach(li => {
+    li.classList.toggle('active', li.dataset.room === currentRoom);
+  });
+}
+
 function addChatMessage(message) {
-  const room = message.room || currentRoom;
-  const div  = document.createElement('div');
+  const div = document.createElement('div');
   div.classList.add('message', message.user.id === currentUser.id ? 'my-message' : 'other-message');
-  div.dataset.room = room;
+  div.dataset.room = message.room || currentRoom;
 
   const hdr = document.createElement('div');
   hdr.classList.add('message-header');
-  const u = document.createElement('span');
-  u.classList.add('message-username'); u.textContent = message.user.username;
-  const t = document.createElement('span');
-  t.classList.add('message-timestamp'); t.textContent = new Date(message.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  const u = document.createElement('span'); u.classList.add('message-username'); u.textContent = message.user.username;
+  const t = document.createElement('span'); t.classList.add('message-timestamp'); t.textContent = new Date(message.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   hdr.append(u, t);
 
-  const cnt = document.createElement('div');
-  cnt.classList.add('message-content');
+  const cnt = document.createElement('div'); cnt.classList.add('message-content');
   if (message.text) cnt.textContent = message.text;
   if (message.hasImage) {
-    const img = document.createElement('img');
-    img.src = message.imageData;
-    img.classList.add('message-image');
-    div.dataset.room = room;
-    cnt.appendChild(img);
+    const img = document.createElement('img'); img.src = message.imageData; img.classList.add('message-image'); cnt.appendChild(img);
   }
 
   div.append(hdr, cnt);
   messagesContainer.appendChild(div);
 }
 
-function addSystemMessage(text, room = currentRoom) {
+function addSystemMessage(text, room) {
   const div = document.createElement('div');
   div.classList.add('system-message');
   div.dataset.room = room;
@@ -227,10 +247,9 @@ function updateRoomsList(rooms) {
   });
 }
 
-function renderRoom(room) {
-  Array.from(messagesContainer.children).forEach(el => {
-    el.style.display = (el.dataset.room === room) ? '' : 'none';
-  });
+function addTypingIndicator(username) {
+  typingIndicator.textContent = `${username} pisze...`;
+  typingIndicator.classList.remove('hidden');
 }
 
 function clearTypingIndicator(username) {
@@ -238,11 +257,6 @@ function clearTypingIndicator(username) {
     typingIndicator.textContent = '';
     typingIndicator.classList.add('hidden');
   }
-}
-
-function addTypingIndicator(username) {
-  typingIndicator.textContent = `${username} pisze...`;
-  typingIndicator.classList.remove('hidden');
 }
 
 function resetImageUpload() {

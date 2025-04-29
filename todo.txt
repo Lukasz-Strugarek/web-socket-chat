@@ -2,5 +2,5 @@
 - wychodzenie z pokoju przyciskiem (done)
 - brak możliwości kliknięcia w zdjęcie (done)
 - dodać "is typing" (done)
-- zmiana koloru dla aktualnego pokoju
-- rozciągnięcie sidebara
+- zmiana koloru dla aktualnego pokoju (done)
+- rozciągnięcie sidebara (done)

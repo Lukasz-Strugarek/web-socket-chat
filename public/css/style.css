@@ -102,7 +102,7 @@ ul {
 
 /* Sidebar */
 .chat-sidebar {
-  width: 250px;
+  width: 300px;           /* ↑ zwiększona szerokość */
   background-color: #333;
   color: #fff;
   padding: 20px;
@@ -121,6 +121,7 @@ ul {
 .room-list {
   margin-bottom: 20px;
   flex-grow: 1;
+  overflow-y: auto;       /* zapobiega reskalowaniu */
 }
 
 .room-list ul {
@@ -134,12 +135,17 @@ ul {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  color: #fff;
 }
 .room-list li:hover {
   background-color: #555;
 }
+
+/* Aktywny pokój – tło i tekst na zielono */
 .room-list li.active {
   background-color: #4CAF50;
+  color: #fff;
+  font-weight: bold;
 }
 
 .create-room {
@@ -180,27 +186,39 @@ ul {
 }
 
 /* Wiadomości */
+.message,
+.system-message {
+  clear: both;
+}
+
 .message {
   padding: 10px 15px;
   margin-bottom: 15px;
   border-radius: 18px;
   max-width: 70%;
   position: relative;
-  clear: both;
 }
-
 .message.my-message {
   background-color: #4CAF50;
   color: white;
   float: right;
   border-bottom-right-radius: 5px;
 }
-
 .message.other-message {
   background-color: #f1f1f1;
   color: #333;
   float: left;
   border-bottom-left-radius: 5px;
+}
+
+.system-message {
+  text-align: center;
+  padding: 8px;
+  margin: 10px 0;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  font-style: italic;
+  color: #666;
 }
 
 .message-header {
@@ -209,25 +227,20 @@ ul {
   margin-bottom: 5px;
   font-size: 12px;
 }
-
 .message-username {
   font-weight: bold;
 }
-
 .message-timestamp {
-  color: #888;
+  color: black;
 }
-
 .message-content {
   word-break: break-word;
 }
-
 .message-image {
   max-width: 100%;
   max-height: 300px;
   margin-top: 10px;
   border-radius: 4px;
-  /* usunięto cursor: pointer; */
 }
 
 /* Wskaźnik pisania */
@@ -243,12 +256,10 @@ ul {
   background-color: #f4f4f4;
   border-top: 1px solid #ddd;
 }
-
 #chat-form {
   display: flex;
   gap: 10px;
 }
-
 .message-input-container {
   display: flex;
   flex: 1;
@@ -257,7 +268,6 @@ ul {
   padding: 5px 15px;
   border: 1px solid #ddd;
 }
-
 #message {
   flex: 1;
   border: none;
@@ -265,12 +275,10 @@ ul {
   padding: 8px 0;
   font-size: 16px;
 }
-
 .upload-wrapper {
   display: flex;
   align-items: center;
 }
-
 .upload-btn {
   cursor: pointer;
   font-size: 20px;
@@ -289,29 +297,15 @@ ul {
   border-radius: 8px;
   border: 1px solid #ddd;
 }
-
 .preview-content {
   display: flex;
   align-items: center;
 }
-
 #preview-img {
   max-height: 100px;
   max-width: 200px;
   border-radius: 4px;
   margin-right: 10px;
-}
-
-/* Systemowe */
-.system-message {
-  text-align: center;
-  padding: 8px;
-  margin: 10px 0;
-  background-color: rgba(0,0,0,0.05);
-  border-radius: 4px;
-  font-style: italic;
-  color: #666;
-  clear: both;
 }
 
 /* Responsywność */
